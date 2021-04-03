@@ -1,5 +1,5 @@
 import 'package:faschingsplaner/views/auth/authentication.dart';
-import 'package:faschingsplaner/views/auth/root_page.dart';
+import 'package:faschingsplaner/views/auth/authentication_view.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -64,9 +64,10 @@ class _MyAppState extends State<MyApp> {
           const Locale('de'),
         ],
         theme: ThemeData(
-            brightness: Brightness.dark,
-            primaryColor: Color.fromRGBO(58, 66, 86, 1.0),
-            accentColor: Colors.blue),
+          brightness: Brightness.dark,
+          primaryColor: Color.fromRGBO(58, 66, 86, 1.0),
+          accentColor: Colors.blue,
+        ),
         initialRoute: '/authentication',
         routes: {
           RootPage.routeName: (context) => RootPage(auth: new Auth()),

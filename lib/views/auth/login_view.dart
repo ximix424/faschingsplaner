@@ -45,8 +45,9 @@ class _LoginSignUpPageState extends State<LoginSignUpPage> {
           print('Signed in: $userId');
         } else {
           userId = await widget.auth.signUp(_email, _password);
+
           //widget.auth.sendEmailVerification();
-          //_showVerifyEmailSentDialog();
+          // _showVerifyEmailSentDialog();
           print('Signed up user: $userId');
         }
         setState(() {
@@ -66,6 +67,10 @@ class _LoginSignUpPageState extends State<LoginSignUpPage> {
           _formKey.currentState.reset();
         });
       }
+    } else {
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
@@ -92,9 +97,8 @@ class _LoginSignUpPageState extends State<LoginSignUpPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Login"),
-      ),
+      backgroundColor: Color.fromRGBO(58, 66, 86, 1.0),
+      appBar: AppBar(title: Text("Login")),
       body: Stack(
         children: [
           _showForm(),
@@ -106,7 +110,13 @@ class _LoginSignUpPageState extends State<LoginSignUpPage> {
 
   Widget _showCircularProgress() {
     if (_isLoading) {
-      return Center(child: CircularProgressIndicator());
+      return Center(
+          child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          LinearProgressIndicator(),
+        ],
+      ));
     }
     return Container(
       height: 0.0,
@@ -229,4 +239,26 @@ class _LoginSignUpPageState extends State<LoginSignUpPage> {
         onPressed: toggleFormMode);
   }
 
+  void _showVerifyEmailSentDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: new Text("Verify your account"),
+          content:
+              new Text("Link to verify account has been sent to your email"),
+          actions: <Widget>[
+            new TextButton(
+              child: new Text("Dismiss"),
+              onPressed: () {
+                toggleFormMode();
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 }

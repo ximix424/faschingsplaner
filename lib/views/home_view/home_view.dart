@@ -3,11 +3,12 @@ import 'dart:async';
 import 'package:faschingsplaner/models/carnival_model.dart';
 import 'package:faschingsplaner/views/add_carnival_view/add_carnival_view.dart';
 import 'package:faschingsplaner/views/auth/authentication.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
-import '../widgets/carnival_list_item_view.dart';
+import 'file:///C:/Users/Marce/AndroidStudioProjects/faschingsplaner/lib/views/home_view/widgets/logout_button.dart';
+
+import 'widgets/carnival_list_item.dart';
 
 class HomeView extends StatefulWidget {
   static const routeName = '/home';
@@ -85,47 +86,62 @@ class _HomeViewState extends State<HomeView> {
     try {
       await widget.auth.signOut();
       widget.logoutCallback();
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content:
+            Text("Logout successful", style: TextStyle(color: Colors.green)),
+      ));
     } catch (e) {
       print(e);
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text("Logout failed", style: TextStyle(color: Colors.red)),
+      ));
     }
   }
 
+  Widget _buildCarnivalListView() {
+    if (_carnivalList.length > 0) {
+      return Container(
+        margin: EdgeInsets.only(top: 6),
+        child: ListView.builder(
+            shrinkWrap: true,
+            scrollDirection: Axis.vertical,
+            physics: BouncingScrollPhysics(),
+            itemCount: _carnivalList.length,
+            itemBuilder: (BuildContext context, int index) {
+              return CarnivalListItem(
+                  carnival: _carnivalList[index], userId: widget.userId);
+            }),
+      );
+    } else {
+      return Center(child: Text("There is no carnival."));
+    }
+  }
+
+  Widget _buildAppBar() {
+    return AppBar(
+      elevation: 0.1,
+      backgroundColor: Color.fromRGBO(58, 66, 86, 1.0),
+      title: Text('Faschingsliste'),
+      actions: [LogoutButton(logoutCallback: widget.logoutCallback)],
+    );
+  }
+
+  Widget _buildFAB() {
+    return FloatingActionButton(
+        child: Icon(Icons.add, color: Colors.white),
+        onPressed: () {
+          Navigator.of(context).pushNamed(AddView.routeName);
+        });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color.fromRGBO(58, 66, 86, 1.0),
-      appBar: AppBar(
-        elevation: 0.1,
-        centerTitle: true,
-        backgroundColor: Color.fromRGBO(58, 66, 86, 1.0),
-        title: Text('Faschingsliste'),
-      ),
-      body: _buildListView(),
-      floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.add, color: Colors.white),
-          onPressed: (){
-            Navigator.of(context).pushNamed(AddView.routeName);
-          }
-      ),
+      appBar: _buildAppBar(),
+      body: _buildCarnivalListView(),
+      floatingActionButton: _buildFAB(),
       floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
-    );
-  }
-
-  Widget _buildListView() {
-    return Container(
-      margin: EdgeInsets.only(top: 6),
-      child: _carnivalList.length > 0
-          ? new ListView.builder(
-              shrinkWrap: true,
-              scrollDirection: Axis.vertical,
-              physics: BouncingScrollPhysics(),
-              itemCount: _carnivalList.length,
-              itemBuilder: (BuildContext context, int index) {
-                return CarnivalListItem(
-                    carnival: _carnivalList[index], userId: widget.userId);
-              })
-          : Container(),
     );
   }
 }

@@ -21,7 +21,8 @@ class _CarnivalListItemState extends State<CarnivalListItem> {
   @override
   void initState() {
     super.initState();
-    widget.carnival.favoriteByUsers = [""];
+    print("Favorite: " + widget.carnival.favoriteByUsers.toString());
+    // widget.carnival.favoriteByUsers = [];
   }
 
   @override
@@ -47,7 +48,7 @@ class _CarnivalListItemState extends State<CarnivalListItem> {
       title: Text(widget.carnival.location,
           style: TextStyle(fontWeight: FontWeight.bold)),
       subtitle: Text(DateFormat('hh:mm').format(widget.carnival.date)),
-      trailing: _makeTrailingContainer(),
+      trailing: _buildTrailingContainer(),
       children: [_buildExpansionContainer()],
     );
   }
@@ -119,11 +120,12 @@ class _CarnivalListItemState extends State<CarnivalListItem> {
         : Text("");
   }
 
-  Widget _makeTrailingContainer() {
+  Widget _buildTrailingContainer() {
     return GestureDetector(
       onTap: () {
         setState(() {
           widget.carnival.toggleFavorite(widget.userId);
+
           FirebaseDatabase _database = FirebaseDatabase.instance;
 
           _database
@@ -138,26 +140,25 @@ class _CarnivalListItemState extends State<CarnivalListItem> {
   }
 
   Widget _buildBadge() {
-    if (widget.carnival.favoriteByUsers != null) {
-      return Badge(
-        badgeContent: Text(
-          '${widget.carnival.favoriteByUsers.length}',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-        ),
-        badgeColor: Colors.blue,
-        elevation: 8,
-        position: BadgePosition.topEnd(top: -10, end: -10),
-        child: widget.carnival.isFavorite(widget.userId)
-            ? Icon(
-                Icons.favorite,
-                color: Colors.blue,
-                size: 30,
-              )
-            : _buildIcon(),
-      );
-    } else {
-      return _buildIcon();
-    }
+    return widget.carnival.favoriteByUsers.length > 0
+        ? Badge(
+            badgeContent: Text(
+              '${widget.carnival.favoriteByUsers.length}',
+              style:
+                  TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+            ),
+            badgeColor: Colors.blue,
+            elevation: 8,
+            position: BadgePosition.topEnd(top: -10, end: -10),
+            child: widget.carnival.isFavorite(widget.userId)
+                ? Icon(
+                    Icons.favorite,
+                    color: Colors.blue,
+                    size: 30,
+                  )
+                : _buildIcon(),
+          )
+        : _buildIcon();
   }
 
   Widget _buildIcon() {

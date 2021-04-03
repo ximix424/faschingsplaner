@@ -26,14 +26,14 @@ class _AddViewState extends State<AddView> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          leading: CloseButton(color: Colors.white,),
+          leading: CloseButton(color: Colors.white),
           title: Text("Fasching hinzufügen"),
           actions: [
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
+            TextButton(
+              style: TextButton.styleFrom(
                 primary: Color.fromRGBO(58, 66, 86, 1.0),
               ),
-              child: Text("SAVE"),
+              child: Text("SAVE", style: TextStyle(color: Colors.white)),
               onPressed: _submitForm,
             ),
           ],

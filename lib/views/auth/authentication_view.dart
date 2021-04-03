@@ -1,6 +1,7 @@
+import 'package:faschingsplaner/views/auth/login_view.dart';
 import 'package:faschingsplaner/views/home_view/home_view.dart';
 import 'package:flutter/material.dart';
-import 'package:faschingsplaner/views/auth/login_signup_view.dart';
+
 import 'authentication.dart';
 
 
