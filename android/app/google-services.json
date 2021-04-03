@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "171264862906",
+    "firebase_url": "https://faschingsplaner-d1d99-default-rtdb.firebaseio.com",
+    "project_id": "faschingsplaner-d1d99",
+    "storage_bucket": "faschingsplaner-d1d99.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:171264862906:android:55e4b9cb1c97d4eafff083",
+        "android_client_info": {
+          "package_name": "com.datarius.faschingsplaner"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "171264862906-q2kg7soqkiraq56rvqn5tk050ojg1vkd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.datarius.faschingsplaner",
+            "certificate_hash": "91ce3927c029124afa6efa6b0ee5e7ac1736de45"
+          }
+        },
+        {
+          "client_id": "171264862906-a5bl7828su08qufnu432n05c6mt50l5u.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDruSkjBojQafLFEwZPysqZEwLO6Fqur2c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "171264862906-a5bl7828su08qufnu432n05c6mt50l5u.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
