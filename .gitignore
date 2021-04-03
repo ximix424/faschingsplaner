@@ -31,6 +31,11 @@
 .pub/
 /build/
 
+# Firebase related
+/.firebase/
+.firebaserc
+
+
 # Web related
 lib/generated_plugin_registrant.dart
 
@@ -44,3 +49,8 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+/.github/
+/database.rules.json
+/node_modules/python3/package.json
+/test/
