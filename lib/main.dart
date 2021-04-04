@@ -1,10 +1,11 @@
-import 'package:faschingsplaner/views/add_carnival_view/add_carnival_view.dart';
-import 'package:faschingsplaner/views/auth/authentication.dart';
-import 'package:faschingsplaner/views/auth/authentication_view.dart';
-import 'package:faschingsplaner/views/home_view/home_view.dart';
+import 'package:faschingsplaner/screens/add/add.dart';
+import 'package:faschingsplaner/screens/home/home.dart';
+import 'package:faschingsplaner/services/authentication.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+
+import 'file:///C:/Users/Marce/AndroidStudioProjects/faschingsplaner/lib/screens/root.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,11 +28,11 @@ class MyApp extends StatelessWidget {
           primaryColor: Color.fromRGBO(58, 66, 86, 1.0),
           accentColor: Colors.blue,
         ),
-        initialRoute: RootPage.routeName,
+        initialRoute: RootScreen.routeName,
         routes: {
-          RootPage.routeName: (context) => RootPage(auth: new Auth()),
-          HomeView.routeName: (context) => HomeView(),
-          AddView.routeName: (context) => AddView(),
+          RootScreen.routeName: (context) => RootScreen(auth: new Auth()),
+          HomeScreen.routeName: (context) => HomeScreen(),
+          AddScreen.routeName: (context) => AddScreen(),
         });
   }
 }

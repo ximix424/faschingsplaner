@@ -1,9 +1,10 @@
 import 'package:badges/badges.dart';
 import 'package:faschingsplaner/models/carnival_model.dart';
-import 'package:faschingsplaner/views/home_view/user_list_item.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
+import 'user_list_item.dart';
 
 class CarnivalListItem extends StatefulWidget {
   CarnivalListItem({this.carnival, this.userId});

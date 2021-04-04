@@ -1,20 +1,19 @@
 import 'package:date_format/date_format.dart';
 import 'package:faschingsplaner/models/carnival_model.dart';
-import 'package:faschingsplaner/views/home_view/home_view.dart';
+import 'package:faschingsplaner/screens/home/home.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 
-class AddView extends StatefulWidget {
-
+class AddScreen extends StatefulWidget {
   static const routeName = '/add';
 
   @override
-  _AddViewState createState() => _AddViewState();
+  _AddScreenState createState() => _AddScreenState();
 }
 
-class _AddViewState extends State<AddView> {
+class _AddScreenState extends State<AddScreen> {
   final FirebaseDatabase _database = FirebaseDatabase.instance;
 
   final _eventFormKey = GlobalKey<FormState>();
@@ -120,7 +119,7 @@ class _AddViewState extends State<AddView> {
 
       // Add carnival to database
       _database.reference().child("carnival").push().set(_formResult.toJson());
-      Navigator.of(context).pushNamed(HomeView.routeName);
+      Navigator.of(context).pushNamed(HomeScreen.routeName);
     }
   }
 
