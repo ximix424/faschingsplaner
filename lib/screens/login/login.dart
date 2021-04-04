@@ -1,4 +1,4 @@
-import 'package:faschingsplaner/views/auth/authentication.dart';
+import 'package:faschingsplaner/services/authentication.dart';
 import 'package:flutter/material.dart';
 
 class LoginSignUpPage extends StatefulWidget {

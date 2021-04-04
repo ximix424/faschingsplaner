@@ -1,9 +1,8 @@
-import 'package:faschingsplaner/views/auth/login_view.dart';
-import 'package:faschingsplaner/views/home_view/home_view.dart';
+import 'package:faschingsplaner/screens/home/home.dart';
+import 'package:faschingsplaner/services/authentication.dart';
 import 'package:flutter/material.dart';
 
-import 'authentication.dart';
-
+import 'login/login.dart';
 
 enum AuthStatus {
   NOT_DETERMINED,
@@ -11,17 +10,17 @@ enum AuthStatus {
   LOGGED_IN,
 }
 
-class RootPage extends StatefulWidget {
-  RootPage({this.auth});
+class RootScreen extends StatefulWidget {
+  RootScreen({this.auth});
 
   static const routeName = '/authentication';
   final BaseAuth auth;
 
   @override
-  State<StatefulWidget> createState() => new _RootPageState();
+  State<StatefulWidget> createState() => new _RootScreenState();
 }
 
-class _RootPageState extends State<RootPage> {
+class _RootScreenState extends State<RootScreen> {
   AuthStatus authStatus = AuthStatus.NOT_DETERMINED;
   String _userId = "";
 
@@ -80,7 +79,7 @@ class _RootPageState extends State<RootPage> {
         break;
       case AuthStatus.LOGGED_IN:
         if (_userId.length > 0 && _userId != null) {
-          return new HomeView(
+          return new HomeScreen(
             userId: _userId,
             auth: widget.auth,
             logoutCallback: logoutCallback,

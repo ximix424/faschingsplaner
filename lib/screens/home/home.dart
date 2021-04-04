@@ -1,20 +1,19 @@
 import 'dart:async';
 
 import 'package:faschingsplaner/models/carnival_model.dart';
-import 'package:faschingsplaner/views/add_carnival_view/add_carnival_view.dart';
-import 'package:faschingsplaner/views/auth/authentication.dart';
+import 'package:faschingsplaner/screens/add/add.dart';
+import 'package:faschingsplaner/services/authentication.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
-import 'file:///C:/Users/Marce/AndroidStudioProjects/faschingsplaner/lib/views/home_view/widgets/logout_button.dart';
-
 import 'widgets/carnival_list_item.dart';
+import 'widgets/logout_button.dart';
 
-class HomeView extends StatefulWidget {
+class HomeScreen extends StatefulWidget {
   static const routeName = '/home';
 
   // Firebase Authentication
-  HomeView({Key key, this.auth, this.userId, this.logoutCallback})
+  HomeScreen({Key key, this.auth, this.userId, this.logoutCallback})
       : super(key: key);
 
   final BaseAuth auth;
@@ -22,10 +21,10 @@ class HomeView extends StatefulWidget {
   final String userId;
 
   @override
-  _HomeViewState createState() => _HomeViewState();
+  _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _HomeViewState extends State<HomeView> {
+class _HomeScreenState extends State<HomeScreen> {
   // final List<Carnival> _carnivals = CarnivalList.getCarnivals();
 
   // Firebase Database
@@ -130,7 +129,7 @@ class _HomeViewState extends State<HomeView> {
     return FloatingActionButton(
         child: Icon(Icons.add, color: Colors.white),
         onPressed: () {
-          Navigator.of(context).pushNamed(AddView.routeName);
+          Navigator.of(context).pushNamed(AddScreen.routeName);
         });
   }
 
