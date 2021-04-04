@@ -1,7 +1,7 @@
-import 'package:faschingsplaner/services/authentication.dart';
-import 'package:faschingsplaner/views/add/add_carnival_view.dart';
-import 'package:faschingsplaner/views/home/home.dart';
-import 'package:faschingsplaner/views/login/login.dart';
+import 'package:faschingsplaner/views/add_carnival_view/add_carnival_view.dart';
+import 'package:faschingsplaner/views/auth/authentication.dart';
+import 'package:faschingsplaner/views/auth/authentication_view.dart';
+import 'package:faschingsplaner/views/home_view/home_view.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -27,11 +27,11 @@ class MyApp extends StatelessWidget {
           primaryColor: Color.fromRGBO(58, 66, 86, 1.0),
           accentColor: Colors.blue,
         ),
-        initialRoute: LoginScreen.routeName,
+        initialRoute: RootPage.routeName,
         routes: {
-          LoginScreen.routeName: (context) => LoginScreen(auth: new Auth()),
-          HomeScreen.routeName: (context) => HomeScreen(),
-          AddScreen.routeName: (context) => AddScreen(),
+          RootPage.routeName: (context) => RootPage(auth: new Auth()),
+          HomeView.routeName: (context) => HomeView(),
+          AddView.routeName: (context) => AddView(),
         });
   }
 }
