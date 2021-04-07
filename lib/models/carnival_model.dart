@@ -1,6 +1,7 @@
-import 'package:firebase_database/firebase_database.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 
-class Carnival{
+class Carnival {
   String carnivalId;
   String name;
   String location;
@@ -8,40 +9,46 @@ class Carnival{
   List<String> favoriteByUsers = [];
 
   Carnival(
-      {this.carnivalId, this.name, this.location, this.date, this.favoriteByUsers});
+      {@required this.carnivalId,
+      this.name,
+      @required this.location,
+      @required this.date,
+      this.favoriteByUsers});
 
-  // Extract the carnival object from firebase database
-  Carnival.fromSnapshot(DataSnapshot snapshot) {
-    carnivalId = snapshot.key;
-    name = snapshot.value["name"];
-    location = snapshot.value["location"];
-    date = DateTime.parse(snapshot.value["date"]);
+  Map<String, dynamic> toMap() => {
+        "name": this.name,
+        "location": this.location,
+        "date": this.date,
+        "favoriteByUsers": this.favoriteByUsers,
+      };
 
-    if (snapshot.value["favoriteByUsers"] != null) {
-      favoriteByUsers = List.from(snapshot.value["favoriteByUsers"]);
+  Carnival.fromMap(QueryDocumentSnapshot queryDocumentSnapshot) {
+    Map<dynamic, dynamic> map = queryDocumentSnapshot.data();
+
+    carnivalId = queryDocumentSnapshot.id;
+    print("CarnivalId: " + carnivalId);
+
+    name = map['name'];
+    location = map['location'];
+    date = DateTime.parse(map['date'].toDate().toString());
+
+    if (map["favoriteByUsers"] != null) {
+      favoriteByUsers = List.from(map["favoriteByUsers"]);
+    } else {
+      favoriteByUsers = [];
     }
   }
 
-  // Wrap the carnival object to a JSON
-  toJson() {
-    return {
-      "name": name,
-      "location": location,
-      "date": date.toString(),
-      "favoriteByUsers": (favoriteByUsers == null) ? [] : List.from(
-          favoriteByUsers),
-    };
+  void toggleFavorite(String userId) {
+    isFavorite(userId)
+        ? removeUserFromFavorite(userId)
+        : addUserToFavorite(userId);
   }
 
   void addUserToFavorite(String userId) {
     if (!favoriteByUsers.contains(userId)) {
       favoriteByUsers.add(userId);
     }
-  }
-
-  void toggleFavorite(String userId) {
-    isFavorite(userId) ? removeUserFromFavorite(userId) : addUserToFavorite(userId);
-    // print('favorite users: ${favoriteByUsers.toString()}');
   }
 
   bool removeUserFromFavorite(String userId) {

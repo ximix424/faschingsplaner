@@ -1,7 +1,6 @@
 import 'package:date_format/date_format.dart';
 import 'package:faschingsplaner/models/carnival_model.dart';
-import 'package:faschingsplaner/screens/home/home.dart';
-import 'package:firebase_database/firebase_database.dart';
+import 'package:faschingsplaner/services/firestore_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -9,13 +8,13 @@ import 'package:flutter/services.dart';
 class AddScreen extends StatefulWidget {
   static const routeName = '/add';
 
+  final FirestoreService _databaseUtils = new FirestoreService();
+
   @override
   _AddScreenState createState() => _AddScreenState();
 }
 
 class _AddScreenState extends State<AddScreen> {
-  final FirebaseDatabase _database = FirebaseDatabase.instance;
-
   final _eventFormKey = GlobalKey<FormState>();
   final _formResult = Carnival();
 
@@ -115,11 +114,11 @@ class _AddScreenState extends State<AddScreen> {
     if (form.validate()) {
       form.save();
       print('Neuer Fasching mit folgenden Informationen gespeichert:\n');
-      print(_formResult.toJson());
+      print(_formResult.toMap());
 
       // Add carnival to database
-      _database.reference().child("carnival").push().set(_formResult.toJson());
-      Navigator.of(context).pushNamed(HomeScreen.routeName);
+      widget._databaseUtils.addCarnival(_formResult);
+      Navigator.of(context).pop();
     }
   }
 

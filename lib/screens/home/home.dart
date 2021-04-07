@@ -1,9 +1,9 @@
-import 'dart:async';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:faschingsplaner/models/carnival_model.dart';
 import 'package:faschingsplaner/screens/add/add.dart';
+import 'package:faschingsplaner/screens/widgets/loading_screen.dart';
 import 'package:faschingsplaner/services/authentication.dart';
-import 'package:firebase_database/firebase_database.dart';
+import 'package:faschingsplaner/services/firestore_service.dart';
 import 'package:flutter/material.dart';
 
 import 'widgets/carnival_list_item.dart';
@@ -16,7 +16,7 @@ class HomeScreen extends StatefulWidget {
   HomeScreen({Key key, this.auth, this.userId, this.logoutCallback})
       : super(key: key);
 
-  final BaseAuth auth;
+  final AuthService auth;
   final VoidCallback logoutCallback;
   final String userId;
 
@@ -25,65 +25,13 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  // final List<Carnival> _carnivals = CarnivalList.getCarnivals();
 
-  // Firebase Database
-  List<Carnival> _carnivalList;
-
-  final FirebaseDatabase _database = FirebaseDatabase.instance;
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-
-  final _textEditingController = TextEditingController();
-  StreamSubscription<Event> _onTodoAddedSubscription;
-  StreamSubscription<Event> _onTodoChangedSubscription;
-
-  Query _carnivalQuery;
-
-
-  @override
-  void initState() {
-    super.initState();
-
-    _carnivalList = [];
-    _carnivalQuery = _database
-      .reference()
-      .child("carnival")
-      .orderByChild("carnivalId");
-
-    _onTodoAddedSubscription = _carnivalQuery.onChildAdded.listen(onEntryAdded);
-    _onTodoChangedSubscription =
-        _carnivalQuery.onChildChanged.listen(onEntryChanged);
-    // Sort the carnivals by date
-    _carnivalList.sort((a,b) => b.date.compareTo(a.date));
-  }
-
-  @override
-  void dispose() {
-    _onTodoAddedSubscription.cancel();
-    _onTodoChangedSubscription.cancel();
-    super.dispose();
-  }
-
-  onEntryChanged(Event event) {
-    var oldEntry = _carnivalList.singleWhere((carnival) {
-      return carnival.carnivalId == event.snapshot.key;
-    });
-
-    setState(() {
-      _carnivalList[_carnivalList.indexOf(oldEntry)] =
-          Carnival.fromSnapshot(event.snapshot);
-    });
-  }
-
-  onEntryAdded(Event event) {
-    setState(() {
-      _carnivalList.add(Carnival.fromSnapshot(event.snapshot));
-    });
-  }
 
   signOut() async {
     try {
       await widget.auth.signOut();
+      Navigator.pop(context);
       widget.logoutCallback();
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content:
@@ -98,30 +46,38 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildCarnivalListView() {
-    if (_carnivalList.length > 0) {
-      return Container(
-        margin: EdgeInsets.only(top: 6),
-        child: ListView.builder(
-            shrinkWrap: true,
-            scrollDirection: Axis.vertical,
-            physics: BouncingScrollPhysics(),
-            itemCount: _carnivalList.length,
-            itemBuilder: (BuildContext context, int index) {
-              return CarnivalListItem(
-                  carnival: _carnivalList[index], userId: widget.userId);
-            }),
-      );
-    } else {
-      return Center(child: Text("There is no carnival."));
-    }
+    return Container(
+      margin: EdgeInsets.only(top: 6),
+      child: StreamBuilder<QuerySnapshot>(
+        stream: FirestoreService().getAllCarnivalsAsStream(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData)
+            return new LoadingScreen();
+          else if (snapshot.hasData) {
+            return new ListView.builder(
+                scrollDirection: Axis.vertical,
+                physics: BouncingScrollPhysics(),
+                itemCount: snapshot.data.docs.length,
+                itemBuilder: (context, index) {
+                  return new CarnivalListItem(
+                    carnival: Carnival.fromMap(snapshot.data.docs[index]),
+                    userId: widget.userId,
+                  );
+                });
+          } else {
+            return Center(
+              child: Text(snapshot.error),
+            );
+          }
+        },
+      ),
+    );
   }
 
   Widget _buildAppBar() {
     return AppBar(
-      elevation: 0.1,
-      backgroundColor: Color.fromRGBO(58, 66, 86, 1.0),
       title: Text('Faschingsliste'),
-      actions: [LogoutButton(logoutCallback: widget.logoutCallback)],
+      actions: [LogoutButton(logoutCallback: signOut)],
     );
   }
 

@@ -1,6 +1,6 @@
 import 'package:badges/badges.dart';
 import 'package:faschingsplaner/models/carnival_model.dart';
-import 'package:firebase_database/firebase_database.dart';
+import 'package:faschingsplaner/services/firestore_service.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -12,6 +12,8 @@ class CarnivalListItem extends StatefulWidget {
   final Carnival carnival;
   final String userId;
 
+  final FirestoreService _firestoreService = new FirestoreService();
+
   @override
   _CarnivalListItemState createState() => _CarnivalListItemState();
 }
@@ -19,12 +21,6 @@ class CarnivalListItem extends StatefulWidget {
 class _CarnivalListItemState extends State<CarnivalListItem> {
   bool isFavorite = false;
 
-  @override
-  void initState() {
-    super.initState();
-    print("Favorite: " + widget.carnival.favoriteByUsers.toString());
-    // widget.carnival.favoriteByUsers = [];
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,65 +56,74 @@ class _CarnivalListItemState extends State<CarnivalListItem> {
       padding: EdgeInsets.only(right: 12.0),
       decoration: BoxDecoration(
           border: Border(right: BorderSide(width: 1.0, color: Colors.white24))),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          Container(
-            height: 30,
-            width: 17,
-            decoration: BoxDecoration(
-                color: _isDatePassed()
-                    ? Colors.redAccent.shade100
-                    : Colors.greenAccent.shade200,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(10),
-                  // bottomRight: Radius.circular(10)
-                )),
-            child: Text(
-              DateFormat('dd').format(widget.carnival.date)[0],
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                  color: Colors.white, fontFamily: 'Arial', fontSize: 24),
-            ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _buildDateDigitContainer(0),
+              SizedBox(width: 1),
+              _buildDateDigitContainer(1),
+            ],
           ),
-          SizedBox(width: 1),
-          Container(
-            height: 30,
-            width: 17,
-            decoration: BoxDecoration(
-                color: _isDatePassed()
-                    ? Colors.redAccent.shade100
-                    : Colors.greenAccent.shade200,
-                borderRadius: BorderRadius.only(
-                    // topLeft: Radius.circular(10),
-                    bottomRight: Radius.circular(10))),
-            child: Text(
-              DateFormat('dd').format(widget.carnival.date)[1],
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                  color: Colors.white, fontFamily: 'Arial', fontSize: 24),
-            ),
-          ),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(
+                DateFormat('MMM').format(widget.carnival.date).toUpperCase(),
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    color: Colors.white,
+                    fontFamily: 'Arial',
+                    fontWeight: FontWeight.bold),
+              ),
+            ],
+          )
         ],
       ),
     );
   }
 
+  Widget _buildDateDigitContainer(int index) {
+    return Container(
+      height: 30,
+      width: 17,
+      decoration: BoxDecoration(
+        color: _isDatePassed()
+            ? Colors.redAccent.shade100
+            : Colors.greenAccent.shade200,
+        borderRadius: index == 0
+            ? BorderRadius.only(topLeft: Radius.circular(10.0))
+            : BorderRadius.only(bottomRight: Radius.circular(10.0)),
+      ),
+      child: Text(
+        DateFormat('dd').format(widget.carnival.date)[index],
+        textAlign: TextAlign.center,
+        style:
+            TextStyle(color: Colors.white, fontFamily: 'Arial', fontSize: 24),
+      ),
+    );
+  }
+
   Widget _buildExpansionContainer() {
-    return widget.carnival.favoriteByUsers.length > 0
-        ? ListView.builder(
-            shrinkWrap: true,
-            scrollDirection: Axis.vertical,
-            physics: BouncingScrollPhysics(),
-            itemCount: widget.carnival.favoriteByUsers.length,
-            itemBuilder: (BuildContext context, int index) {
-              return UserListItem(
-                  userId: widget.carnival.favoriteByUsers[index]);
-            },
-          )
-        : Text("");
+    return Visibility(
+      visible: widget.carnival.favoriteByUsers.length > 0,
+      child: ListView.builder(
+        shrinkWrap: true,
+        scrollDirection: Axis.vertical,
+        physics: BouncingScrollPhysics(),
+        itemCount: widget.carnival.favoriteByUsers.length,
+        itemBuilder: (BuildContext context, int index) {
+          print(widget.carnival.favoriteByUsers.toString());
+          return UserListItem(userId: widget.carnival.favoriteByUsers[index]);
+        },
+      ),
+    );
   }
 
   Widget _buildTrailingContainer() {
@@ -126,14 +131,7 @@ class _CarnivalListItemState extends State<CarnivalListItem> {
       onTap: () {
         setState(() {
           widget.carnival.toggleFavorite(widget.userId);
-
-          FirebaseDatabase _database = FirebaseDatabase.instance;
-
-          _database
-              .reference()
-              .child("carnival")
-              .child(widget.carnival.carnivalId)
-              .set(widget.carnival.toJson());
+          widget._firestoreService.updateCarnivalFavorites(widget.carnival);
         });
       },
       child: _buildBadge(),

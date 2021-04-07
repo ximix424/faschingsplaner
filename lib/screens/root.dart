@@ -1,4 +1,5 @@
 import 'package:faschingsplaner/screens/home/home.dart';
+import 'package:faschingsplaner/screens/widgets/loading_screen.dart';
 import 'package:faschingsplaner/services/authentication.dart';
 import 'package:flutter/material.dart';
 
@@ -14,7 +15,7 @@ class RootScreen extends StatefulWidget {
   RootScreen({this.auth});
 
   static const routeName = '/authentication';
-  final BaseAuth auth;
+  final AuthService auth;
 
   @override
   State<StatefulWidget> createState() => new _RootScreenState();
@@ -56,20 +57,11 @@ class _RootScreenState extends State<RootScreen> {
     });
   }
 
-  Widget buildWaitingScreen() {
-    return Scaffold(
-      body: Container(
-        alignment: Alignment.center,
-        child: CircularProgressIndicator(),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     switch (authStatus) {
       case AuthStatus.NOT_DETERMINED:
-        return buildWaitingScreen();
+        return new LoadingScreen();
         break;
       case AuthStatus.NOT_LOGGED_IN:
         return new LoginSignUpPage(
@@ -85,10 +77,10 @@ class _RootScreenState extends State<RootScreen> {
             logoutCallback: logoutCallback,
           );
         } else
-          return buildWaitingScreen();
+          return new LoadingScreen();
         break;
       default:
-        return buildWaitingScreen();
+        return new LoadingScreen();
     }
   }
 }

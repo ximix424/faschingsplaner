@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 
 
-abstract class BaseAuth {
+abstract class AuthService {
   Future<String> signIn(String email, String password);
 
   Future<String> signUp(String email, String password);
@@ -17,7 +17,7 @@ abstract class BaseAuth {
   Future<bool> isEmailVerified();
 }
 
-class Auth implements BaseAuth {
+class FirebaseAuthService implements AuthService {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
   Future<String> signIn(String email, String password) async {
@@ -26,7 +26,6 @@ class Auth implements BaseAuth {
     User user = result.user;
     return user.uid;
   }
-
 
   Future<String> signUp(String email, String password) async {
     UserCredential result = await _firebaseAuth.createUserWithEmailAndPassword(

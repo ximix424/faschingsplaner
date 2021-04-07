@@ -1,11 +1,11 @@
 import 'package:faschingsplaner/screens/add/add.dart';
 import 'package:faschingsplaner/screens/home/home.dart';
+import 'package:faschingsplaner/screens/root.dart';
 import 'package:faschingsplaner/services/authentication.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
-import 'file:///C:/Users/Marce/AndroidStudioProjects/faschingsplaner/lib/screens/root.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,7 +30,8 @@ class MyApp extends StatelessWidget {
         ),
         initialRoute: RootScreen.routeName,
         routes: {
-          RootScreen.routeName: (context) => RootScreen(auth: new Auth()),
+          RootScreen.routeName: (context) =>
+              RootScreen(auth: new FirebaseAuthService()),
           HomeScreen.routeName: (context) => HomeScreen(),
           AddScreen.routeName: (context) => AddScreen(),
         });

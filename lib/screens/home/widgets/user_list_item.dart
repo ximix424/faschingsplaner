@@ -20,7 +20,7 @@ class _UserListItemState extends State<UserListItem> {
         minLeadingWidth: 0,
         tileColor: Color.fromRGBO(58, 66, 86, 1.0),
         leading: Icon(Icons.account_circle, color: Colors.white),
-        title: Text(widget.userId),
+        title: Text(widget.userId == null ? "" : widget.userId),
       ),
     );
   }
